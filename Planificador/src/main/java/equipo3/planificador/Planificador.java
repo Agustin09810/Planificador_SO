@@ -4,6 +4,7 @@
  */
 
 package equipo3.planificador;
+import java.util.LinkedList;
 
 /**
  *
@@ -11,7 +12,10 @@ package equipo3.planificador;
  */
 public class Planificador {
 
-    public static void main(String[] args) {
-        
-    }
+    private LinkedList<Proceso> tiempoReal = new LinkedList<>();
+    private LinkedList<Proceso> interactivos = new LinkedList<>();
+    private LinkedList<Proceso> batch = new LinkedList<>();
+    
+    
+    
 }

@@ -23,12 +23,22 @@ public class Planificador {
     private static final int QUANTUM_BATCH = 3;
 
     public boolean agregarProceso(Proceso proc) {
-        if (proc.getTipo() == Tipo.INTERACTIVOS) {
-            interactivos.add(proc);
-        } else if (proc.getTipo() == Tipo.BATCH) {
-            batch.add(proc);
-        } else {
+        if (null == proc.getTipo()) {
             return false;
+        } else switch (proc.getTipo()) {
+            case INTERACTIVO:
+                interactivos.add(proc);
+                interactivos.sort(new comparadorPrioridad());
+                break;
+            case BATCH:
+                batch.add(proc);
+                break;
+            case TIEMPOREAL:
+                tiempoReal.add(proc);
+                break;
+            default:
+                System.out.println("El proceso debe de ser de tipo TIEMPOREAL, INTERACTIVO o BATCH ");
+                return false;
         }
         return true;
     }

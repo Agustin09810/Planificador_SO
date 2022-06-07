@@ -3,11 +3,22 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package equipo3.planificador;
-
+import java.util.Comparator;
 /**
  *
  * @author Administrador
  */
-public class comparadorTiempo {
-    
+public class comparadorTiempo implements Comparator {
+
+    @Override
+    public int compare(Object o1, Object o2) {
+        Proceso p1 = (Proceso) o1;
+        Proceso p2 = (Proceso) o2;
+        if(p1.getTiempoRestante() < p2.getTiempoRestante())
+            return -1;
+        if(p1.getTiempoRestante() > p2.getTiempoRestante())
+            return 1;
+        else
+            return 0;
+    }
 }

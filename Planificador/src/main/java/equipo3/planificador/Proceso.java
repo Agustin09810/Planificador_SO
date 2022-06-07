@@ -16,16 +16,26 @@ public class Proceso {
     private HashMap<Integer, Integer> entradaSalida = new HashMap<>();
     private Tipo tipo;
     private Estado estado;
-    // CADA CUANTO SE HACE ENTRADA Y SALIDA
 
-    // CUANTO TIEMPO EN ENTRADA Y SALIDA
-
-    // constructor
-
-    public Proceso(int id, int prioridad, Tipo tipo, int duracion, HashMap<Integer, Integer> entradaSalida) {
+    public Proceso(int id, int prioridad, int duracion, HashMap<Integer, Integer> entradaSalida) {
         this.id = id;
         this.prioridad = prioridad;
-        this.tipo = tipo;
+        if(prioridad < 1 || prioridad > 99){
+            System.out.println("ERROR: No se puede crear proceso, prioridad debe ser entre 1 y 99");
+            System.exit(1);
+        }
+        else if(prioridad >= 1 && prioridad <= 20){
+            this.prioridad = prioridad;
+            this.tipo = Tipo.TIEMPOREAL;
+        }
+        else if(prioridad >= 21 && prioridad <= 70){
+            this.prioridad = prioridad;
+            this.tipo = Tipo.INTERACTIVO;
+        }
+        else if(prioridad >= 71 && prioridad <= 90){
+            this.prioridad = prioridad;
+            this.tipo = Tipo.BATCH;
+        }
         this.tiempoRestante = duracion;
         this.entradaSalida = entradaSalida;
     }
@@ -79,8 +89,4 @@ public class Proceso {
     public void setTipo(Tipo tipo) {
         this.tipo = tipo;
     }
-
-    // METODO PARA SETEAR ESTADO
-
-    // METODO PARA DEVOLVER ESTADO
 }

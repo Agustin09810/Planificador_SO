@@ -29,14 +29,17 @@ public class Proceso {
     Estado estado;
     
     
-    public Proceso(int id, int prioridad, int tipo, LocalDateTime tiempoFin){
+    public Proceso(int id, int prioridad, Tipo tipo , LocalDateTime tiempoFin){
         this.id = id;
         this.prioridad = prioridad;
-        //Falta terminar
+        this.tipo = tipo;
+        this.duracion = tiempoFin;
     } 
     
-    
-            
+    public LocalDateTime getTiempoRestante(){
+        return this.duracion;
+    }
+                  
     public int getID(){
         return this.id;
     }

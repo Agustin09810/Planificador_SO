@@ -8,8 +8,8 @@ package equipo3.planificador;
  *
  * @author nicolascartalla
  */
-public enum Estado{
-        BLOQUEADO,
-        LISTO,
-        FINALIZADO
-    }
+public enum Estado {
+    BLOQUEADO,
+    LISTO,
+    FINALIZADO
+}

@@ -13,12 +13,14 @@ import java.util.LinkedList;
  */
 public class Planificador {
 
-    private Lista<Proceso> tiempoReal = new Lista<>();
-    private Lista<Proceso> interactivos = new Lista<>();
-    private Lista<Proceso> batch = new Lista<>();
-    private Lista<Proceso> bloqueados = new Lista<>();
-    private Lista<Proceso> finalizados = new Lista<>();
-    private int QUANTUM = 4;
+    private LinkedList<Proceso> tiempoReal = new LinkedList<>();
+    private LinkedList<Proceso> interactivos = new LinkedList<>();
+    private LinkedList<Proceso> batch = new LinkedList<>();
+    private LinkedList<Proceso> bloqueados = new LinkedList<>();
+    private LinkedList<Proceso> finalizados = new LinkedList<>();
+    private static final int QUANTUM_TIEMPO_REAL = 1;
+    private static final int QUANTUM_INTERACTIVO = 2;
+    private static final int QUANTUM_BATCH = 3;
 
     public boolean agregarProceso(Proceso proc) {
         if (proc.getTipo() == Tipo.INTERACTIVOS) {
@@ -30,11 +32,11 @@ public class Planificador {
         }
         return true;
     }
-    
+
     public void procesarProcesos() {
         Proceso proc;
         while (!tiempoReal.isEmpty() || !interactivos.isEmpty() || !batch.isEmpty()) {
-            
+
             if (!tiempoReal.isEmpty()) {
                 proc = tiempoReal.removeFirst();
                 tiempoReal.add(proc);

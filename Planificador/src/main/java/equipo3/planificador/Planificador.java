@@ -4,6 +4,7 @@
  */
 
 package equipo3.planificador;
+
 import java.util.LinkedList;
 
 /**
@@ -12,10 +13,46 @@ import java.util.LinkedList;
  */
 public class Planificador {
 
-    private LinkedList<Proceso> tiempoReal = new LinkedList<>();
-    private LinkedList<Proceso> interactivos = new LinkedList<>();
-    private LinkedList<Proceso> batch = new LinkedList<>();
+    private Lista<Proceso> tiempoReal = new Lista<>();
+    private Lista<Proceso> interactivos = new Lista<>();
+    private Lista<Proceso> batch = new Lista<>();
+    private Lista<Proceso> bloqueados = new Lista<>();
+    private Lista<Proceso> finalizados = new Lista<>();
+    private int QUANTUM = 4;
+
+    public boolean agregarProceso(Proceso proc) {
+        if (proc.getTipo() == Tipo.INTERACTIVOS) {
+            interactivos.add(proc);
+        } else if (proc.getTipo() == Tipo.BATCH) {
+            batch.add(proc);
+        } else {
+            return false;
+        }
+        return true;
+    }
     
-    
-    
+    public void procesarProcesos() {
+        Proceso proc;
+        while (!tiempoReal.isEmpty() || !interactivos.isEmpty() || !batch.isEmpty()) {
+            
+            if (!tiempoReal.isEmpty()) {
+                proc = tiempoReal.removeFirst();
+                tiempoReal.add(proc);
+                if (proc.getTiempoRestante() == 0) {
+                    finalizados.add(proc);
+                } else {
+                    bloqueados.add(proc);
+                }
+            }
+            if (!batch.isEmpty()) {
+                proc = batch.removeFirst();
+                tiempoReal.add(proc);
+                if (proc.getTiempoRestante() == 0) {
+                    finalizados.add(proc);
+                } else {
+                    bloqueados.add(proc);
+                }
+            }
+        }
+    }
 }

@@ -11,6 +11,6 @@ package equipo3.planificador;
 public class Main {
     
     public static void main(String[] args) {
-        
+        System.out.println("Planificador");
     }
 }

@@ -21,6 +21,7 @@ public class Planificador {
     private static final int QUANTUM_TIEMPO_REAL = 1;
     private static final int QUANTUM_INTERACTIVO = 2;
     private static final int QUANTUM_BATCH = 3;
+    private CPU cpu = new CPU();
 
     public boolean agregarProceso(Proceso proc) {
         if (null == proc.getTipo()) {
@@ -45,10 +46,39 @@ public class Planificador {
 
     public void procesarProcesos() {
         Proceso proc;
+        
         while (!tiempoReal.isEmpty() || !interactivos.isEmpty() || !batch.isEmpty()) {
 
             //Verificar si tiemporeal no es vacía.
             // comienzo RoundRobin
+            if(!tiempoReal.isEmpty()){
+                Proceso procesoActual = tiempoReal.getFirst();
+                int resto = cpu.procesarProceso(procesoActual, QUANTUM_TIEMPO_REAL, bloqueados);
+                reasignarProcesos(procesoActual, interactivos);
+                
+                continue;
+            }
         }
+    }
+    
+    public void reasignarProcesos(Proceso proc, LinkedList<Proceso> listaProcesos) {
+        if(proc.getEstado() == Estado.FINALIZADO){
+            tiempoReal.remove(proc);
+            finalizados.add(proc);
+            //obtener tiempo de finalizado para mostrarlo en la interfaz gráfica.                        
+        } else if(proc.getEstado() == Estado.BLOQUEADO) {
+            tiempoReal.remove(proc);
+            bloqueados.add(proc);
+        }
+        
+        if(!bloqueados.isEmpty()){
+            for(Proceso p : bloqueados){
+                if(p.getTiempoBloqueado()==0){
+                    bloqueados.remove(p);
+                    listaProcesos.add(p);
+                }
+            }
+        }
+        
     }
 }

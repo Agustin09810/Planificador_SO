@@ -47,24 +47,8 @@ public class Planificador {
         Proceso proc;
         while (!tiempoReal.isEmpty() || !interactivos.isEmpty() || !batch.isEmpty()) {
 
-            if (!tiempoReal.isEmpty()) {
-                proc = tiempoReal.removeFirst();
-                tiempoReal.add(proc);
-                if (proc.getTiempoRestante() == 0) {
-                    finalizados.add(proc);
-                } else {
-                    bloqueados.add(proc);
-                }
-            }
-            if (!batch.isEmpty()) {
-                proc = batch.removeFirst();
-                tiempoReal.add(proc);
-                if (proc.getTiempoRestante() == 0) {
-                    finalizados.add(proc);
-                } else {
-                    bloqueados.add(proc);
-                }
-            }
+            //Verificar si tiemporeal no es vacía.
+            // comienzo RoundRobin
         }
     }
 }

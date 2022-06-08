@@ -16,6 +16,7 @@ public class Proceso {
     private HashMap<Integer, Integer> entradaSalida = new HashMap<>();
     private Tipo tipo;
     private Estado estado;
+    private double tiempoBloqueado = 0.0;
 
     public Proceso(int id, int prioridad, int duracion, HashMap<Integer, Integer> entradaSalida) {
         this.id = id;
@@ -32,7 +33,7 @@ public class Proceso {
             this.prioridad = prioridad;
             this.tipo = Tipo.INTERACTIVO;
         }
-        else if(prioridad >= 71 && prioridad <= 90){
+        else if(prioridad >= 71 && prioridad <= 99){
             this.prioridad = prioridad;
             this.tipo = Tipo.BATCH;
         }
@@ -89,4 +90,18 @@ public class Proceso {
     public void setTipo(Tipo tipo) {
         this.tipo = tipo;
     }
+    
+    public double getTiempoBloqueado() {
+        return tiempoBloqueado;
+    }
+
+    public void setTiempoBloqueado(double tiempoBloqueado) {
+        if(tiempoBloqueado <0) {
+            this.tiempoBloqueado = 0.0;
+        }else {
+            this.tiempoBloqueado = tiempoBloqueado;
+            
+        }
+    }
+    
 }

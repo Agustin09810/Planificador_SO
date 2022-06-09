@@ -53,32 +53,40 @@ public class Planificador {
             // comienzo RoundRobin
             if(!tiempoReal.isEmpty()){
                 Proceso procesoActual = tiempoReal.getFirst();
-                int resto = cpu.procesarProceso(procesoActual, QUANTUM_TIEMPO_REAL, bloqueados);
-                reasignarProcesos(procesoActual, interactivos);
-                
+                int resto = cpu.procesarProceso(procesoActual, QUANTUM_TIEMPO_REAL, bloqueados); //??
+                reasignarProcesos(procesoActual, tiempoReal);
+                chequearBloqueados(tiempoReal);
                 continue;
             }
+            else if(!interactivos.isEmpty()){
+                Proceso procesoActual = interactivos.getFirst();
+                int resto = cpu.procesarProceso(procesoActual, QUANTUM_INTERACTIVO, bloqueados);
+                reasignarProcesos(procesoActual, interactivos);
+                chequearBloqueados(interactivos);
+                interactivos.sort(new comparadorPrioridad());
+            }
+            
         }
     }
     
     public void reasignarProcesos(Proceso proc, LinkedList<Proceso> listaProcesos) {
         if(proc.getEstado() == Estado.FINALIZADO){
-            tiempoReal.remove(proc);
-            finalizados.add(proc);
-            //obtener tiempo de finalizado para mostrarlo en la interfaz gráfica.                        
+            listaProcesos.remove(proc);
+            proc.tiempoFinalizadoAhora();
+            finalizados.add(proc);                    
         } else if(proc.getEstado() == Estado.BLOQUEADO) {
-            tiempoReal.remove(proc);
+            listaProcesos.remove(proc);
             bloqueados.add(proc);
         }
-        
+    }
+    public void chequearBloqueados(LinkedList<Proceso> listaProcesos){
         if(!bloqueados.isEmpty()){
-            for(Proceso p : bloqueados){
-                if(p.getTiempoBloqueado()==0){
-                    bloqueados.remove(p);
-                    listaProcesos.add(p);
-                }
+        for(Proceso p : bloqueados){
+            if(p.getTiempoBloqueado()==0){
+                bloqueados.remove(p);
+                listaProcesos.add(p);
             }
         }
-        
+        }
     }
 }

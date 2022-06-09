@@ -12,6 +12,7 @@ public class Proceso {
     private int prioridad;
     private int tiempoRestante;
     private LocalDateTime tiempoCreacion = LocalDateTime.now();
+    private LocalDateTime tiempoFinalizado;
     private int tiempoEjecucionActual;
     private HashMap<Integer, Integer> entradaSalida = new HashMap<>();
     private Tipo tipo;
@@ -102,6 +103,10 @@ public class Proceso {
             this.tiempoBloqueado = tiempoBloqueado;
             
         }
+    }
+    
+    public void tiempoFinalizadoAhora(){
+        this.tiempoFinalizado = LocalDateTime.now();
     }
     
 }

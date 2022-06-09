@@ -36,7 +36,7 @@ public class CPU {
                 }
                 if (proc.getEntradaSalida().containsKey(proc.getTiempoEjecucionActual())) {
                     proc.setEstado(Estado.BLOQUEADO);
-                    proc.setTiempoBloqueado((Integer) proc.getEntradaSalida().get(proc.getTiempoEjecucionActual()));
+                    proc.setTiempoBloqueado((Double) proc.getEntradaSalida().get(proc.getTiempoEjecucionActual()));
                     return quantum;
                 }
                 quantum--;

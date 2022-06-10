@@ -14,11 +14,6 @@ public class comparadorTiempo implements Comparator {
     public int compare(Object o1, Object o2) {
         Proceso p1 = (Proceso) o1;
         Proceso p2 = (Proceso) o2;
-        if(p1.getTiempoRestante() < p2.getTiempoRestante())
-            return -1;
-        if(p1.getTiempoRestante() > p2.getTiempoRestante())
-            return 1;
-        else
-            return 0;
+        return(p1.getTiempoCreacion().compareTo(p2.getTiempoCreacion()));
     }
 }

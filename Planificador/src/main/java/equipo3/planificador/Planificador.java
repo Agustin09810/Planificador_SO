@@ -6,6 +6,7 @@
 package equipo3.planificador;
 
 import java.util.LinkedList;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -21,8 +22,13 @@ public class Planificador {
     private static final int QUANTUM_TIEMPO_REAL = 1;
     private static final int QUANTUM_INTERACTIVO = 2;
     private static final int QUANTUM_BATCH = 3;
+    private DefaultTableModel tablaProcesos;
     private CPU cpu = new CPU();
 
+    public Planificador(DefaultTableModel tablaProcesos){
+        this.tablaProcesos = tablaProcesos;
+    }
+    
     public boolean agregarProceso(Proceso proc) {
         if (null == proc.getTipo()) {
             return false;
@@ -41,9 +47,22 @@ public class Planificador {
                 System.out.println("El proceso debe de ser de tipo TIEMPOREAL, INTERACTIVO o BATCH ");
                 return false;
         }
+        cargarTablaProcesos();
         return true;
+        
     }
 
+    private void cargarTablaProcesos(){
+        LinkedList<Proceso> todos = new LinkedList<Proceso>();
+        todos.addAll(interactivos);
+        todos.addAll(tiempoReal);
+        todos.addAll(batch);
+        for(Proceso actual : todos){
+            this.tablaProcesos.addRow(actual.imprimirProcesos(";").split(";"));
+        }
+
+    }
+    
     public void procesarProcesos() {
         Proceso proc;
         

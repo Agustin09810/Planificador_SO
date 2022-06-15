@@ -2,27 +2,31 @@ package equipo3.planificador;
 
 import java.time.*;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
  * @author Equipo 3
  */
 public class Proceso {
+    private static final AtomicInteger count = new AtomicInteger(0);
     private int id;
+    private String nombre;
     private int prioridad;
     private int tiempoRestante;
-    private LocalDateTime tiempoCreacion = LocalDateTime.now();
-    private LocalDateTime tiempoFinalizado;
+    private LocalTime tiempoCreacion = LocalTime.now();
+    private LocalTime tiempoFinalizado;
     private int tiempoEjecucionActual;
     private HashMap<Integer, Integer> entradaSalida = new HashMap<>();
     private Tipo tipo;
     private Estado estado;
     private double tiempoBloqueado = 0.0;
 
-    public Proceso(int id, int prioridad, int duracion, HashMap<Integer, Integer> entradaSalida) {
-        this.id = id;
+    public Proceso(String nombre, int prioridad, int duracion, HashMap<Integer, Integer> entradaSalida) {
+        this.id = count.incrementAndGet();
+        this.nombre = nombre;
         this.prioridad = prioridad;
-        if(prioridad < 1 || prioridad > 99){
+        if(prioridad < 1 || prioridad > 99) {
             System.out.println("ERROR: No se puede crear proceso, prioridad debe ser entre 1 y 99");
             System.exit(1);
         }
@@ -40,6 +44,7 @@ public class Proceso {
         }
         this.tiempoRestante = duracion;
         this.entradaSalida = entradaSalida;
+        this.estado = Estado.LISTO;
     }
 
     public int getID() {
@@ -68,7 +73,7 @@ public class Proceso {
         return this.tiempoEjecucionActual;
     }
 
-    public LocalDateTime getTiempoCreacion() {
+    public LocalTime getTiempoCreacion() {
         return this.tiempoCreacion;
     }
 
@@ -106,7 +111,12 @@ public class Proceso {
     }
     
     public void tiempoFinalizadoAhora(){
-        this.tiempoFinalizado = LocalDateTime.now();
+        this.tiempoFinalizado = LocalTime.now();
+    }
+    
+    public String imprimirProcesos(String separador){
+        
+        return this.id + separador + this.nombre + separador + this.tipo.toString() + separador + this.tiempoCreacion.toString() + separador + this.tiempoRestante + separador + this.estado.toString();
     }
     
 }

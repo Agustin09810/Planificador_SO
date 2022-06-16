@@ -63,7 +63,7 @@ public class Planificador {
                 reasignarProcesos(procesoActual, interactivos); //Una vez terminado, se llama al proceso reasignarProcesos
                 chequearBloqueados(interactivos); //proceso cheaquear bloqueados
                 if(procesoActual.getEstado() == Estado.LISTO) //Si el proceso no se termino ni se bloqueo, se baja en uno su prioridad debido a que ya tuvo tiempo de CPU. para cumplir con el HRN
-                    procesoActual.setPrioridad(procesoActual.getPrioridad() - 1);
+                    procesoActual.setPrioridad(procesoActual.getPrioridad() - 1);//VERIFICACION
                 interactivos.sort(new comparadorPrioridad()); //Se reordenan los proceso por prioridad por si hubo algun cambio
                 continue;
             }
@@ -109,21 +109,26 @@ public class Planificador {
             proc.setPrioridad(prioridad);
             proc.setTipo(Tipo.TIEMPOREAL);
             if(!tiempoReal.contains(proc)){
+                cambiarPrioridadAux(proc);
                 tiempoReal.add(proc);
             }
         }
         else if(prioridad >= 21 && prioridad <= 70){
             proc.setPrioridad(prioridad);
             proc.setTipo(Tipo.INTERACTIVO);
-            cambiarPrioridadAux(proc);
-            interactivos.add(proc);
+            if(!interactivos.contains(proc)){
+                cambiarPrioridadAux(proc);
+                interactivos.add(proc);
+            }
             interactivos.sort(new comparadorPrioridad());
         }
         else if(prioridad >= 71 && prioridad <= 99){
             proc.setPrioridad(prioridad);
             proc.setTipo(Tipo.BATCH);
-            cambiarPrioridadAux(proc);
-            batch.add(proc);
+            if(!batch.contains(proc)){
+                cambiarPrioridadAux(proc);
+                batch.add(proc);
+            }
             batch.sort(new comparadorTiempo());
         }
         //QUE PASA CON LOS BLOQUEADOS?????????????
@@ -131,7 +136,7 @@ public class Planificador {
     
     public void cambiarPrioridadAux(Proceso proc){
         if(tiempoReal.contains(proc))
-            return;
+            tiempoReal.remove(proc);
         if(interactivos.contains(proc))
             interactivos.remove(proc);
         if(batch.contains(proc))

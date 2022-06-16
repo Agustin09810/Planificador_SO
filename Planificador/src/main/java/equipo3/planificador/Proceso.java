@@ -14,7 +14,7 @@ public class Proceso {
     private LocalDateTime tiempoCreacion = LocalDateTime.now();
     private LocalDateTime tiempoFinalizado;
     private int tiempoEjecucionActual;
-    private HashMap<Integer, Integer> entradaSalida = new HashMap<>();
+private HashMap<Integer, Integer> entradaSalida = new HashMap<>();
     private Tipo tipo;
     private Estado estado;
     private double tiempoBloqueado = 0.0;

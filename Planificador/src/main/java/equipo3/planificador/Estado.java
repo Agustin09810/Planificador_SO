@@ -11,5 +11,6 @@ package equipo3.planificador;
 public enum Estado {
     BLOQUEADO,
     LISTO,
-    FINALIZADO
+    FINALIZADO,
+    EJECUCION,
 }

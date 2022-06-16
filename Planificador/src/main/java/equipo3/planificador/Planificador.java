@@ -12,7 +12,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Administrador
  */
-public class Planificador {
+public class Planificador{
 
     private LinkedList<Proceso> tiempoReal = new LinkedList<>();
     private LinkedList<Proceso> interactivos = new LinkedList<>();
@@ -47,30 +47,37 @@ public class Planificador {
                 System.out.println("El proceso debe de ser de tipo TIEMPOREAL, INTERACTIVO o BATCH ");
                 return false;
         }
-        cargarTablaProcesos();
+        //cargarTablaProcesos();
         return true;
         
     }
 
     private void cargarTablaProcesos(){
+        tablaProcesos.setRowCount(0);
+        
         LinkedList<Proceso> todos = new LinkedList<Proceso>();
         todos.addAll(interactivos);
         todos.addAll(tiempoReal);
         todos.addAll(batch);
+        todos.addAll(finalizados);
+        todos.addAll(bloqueados);
         for(Proceso actual : todos){
             this.tablaProcesos.addRow(actual.imprimirProcesos(";").split(";"));
         }
 
     }
     
-    public void procesarProcesos() {
+    public void procesarProcesos() throws InterruptedException {
         Proceso proc;
         
         while (!tiempoReal.isEmpty() || !interactivos.isEmpty() || !batch.isEmpty()) {
+            cargarTablaProcesos();
             //Verificar si tiemporeal no es vacía.
             // comienzo RoundRobin
+            
             if(!tiempoReal.isEmpty()){
                 Proceso procesoActual = tiempoReal.getFirst();
+                System.out.println("Procesando.. "+procesoActual.imprimirProcesos("-"));
                 int resto = cpu.procesarProceso(procesoActual, QUANTUM_TIEMPO_REAL, bloqueados); //??
                 reasignarProcesos(procesoActual, tiempoReal);
                 chequearBloqueados(tiempoReal);
@@ -78,6 +85,7 @@ public class Planificador {
             }
             else if(!interactivos.isEmpty()){ //HRN
                 Proceso procesoActual = interactivos.getFirst(); //agarra el primero de la lista de interactivos(el que tiene mas prioridad)
+                System.out.println("Procesando.. "+procesoActual.imprimirProcesos("-"));
                 int resto = cpu.procesarProceso(procesoActual, QUANTUM_INTERACTIVO, bloqueados); //lo manda al procesador para que lo procese
                 reasignarProcesos(procesoActual, interactivos); //Una vez terminado, se llama al proceso reasignarProcesos
                 chequearBloqueados(interactivos); //proceso cheaquear bloqueados
@@ -88,6 +96,7 @@ public class Planificador {
             }
             else if(!batch.isEmpty()){
                 Proceso procesoActual = batch.getFirst();
+                System.out.println("Procesando.. "+procesoActual.imprimirProcesos("-"));
                 int resto = cpu.procesarProceso(procesoActual, QUANTUM_BATCH, bloqueados);
                 reasignarProcesos(procesoActual, batch);
                 chequearBloqueados(batch);
@@ -96,6 +105,7 @@ public class Planificador {
             }
             
         }
+        cargarTablaProcesos();
     }
     
     public void reasignarProcesos(Proceso proc, LinkedList<Proceso> listaProcesos) {

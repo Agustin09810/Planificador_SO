@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -29,16 +31,13 @@ public class UI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPopupMenu1 = new javax.swing.JPopupMenu();
         bg = new javax.swing.JPanel();
         header = new javax.swing.JPanel();
         exitBtn = new javax.swing.JPanel();
         exitTxt = new javax.swing.JLabel();
         title = new javax.swing.JLabel();
         userLabel = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
-        jPCargarProcesos1 = new javax.swing.JPanel();
-        jPCargarProcesos2 = new javax.swing.JPanel();
-        CargarProcesosArchivo = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         TablaProcesos = new javax.swing.JTable();
         JPCrearProcesoManual = new javax.swing.JPanel();
@@ -52,6 +51,10 @@ public class UI extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         procesoDuracion = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jPCargarProcesos1 = new javax.swing.JPanel();
+        jPCargarProcesos2 = new javax.swing.JPanel();
+        CargarProcesosArchivo = new javax.swing.JButton();
         userLabel1 = new javax.swing.JLabel();
         jProgressBar1 = new javax.swing.JProgressBar();
         jProgressBar2 = new javax.swing.JProgressBar();
@@ -130,78 +133,6 @@ public class UI extends javax.swing.JFrame {
         userLabel.setText("Carga desde Archivo");
         bg.add(userLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, -1, 20));
 
-        jPanel1.setOpaque(false);
-
-        jPCargarProcesos1.setBackground(new java.awt.Color(0, 134, 190));
-
-        javax.swing.GroupLayout jPCargarProcesos1Layout = new javax.swing.GroupLayout(jPCargarProcesos1);
-        jPCargarProcesos1.setLayout(jPCargarProcesos1Layout);
-        jPCargarProcesos1Layout.setHorizontalGroup(
-            jPCargarProcesos1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPCargarProcesos1Layout.setVerticalGroup(
-            jPCargarProcesos1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 40, Short.MAX_VALUE)
-        );
-
-        jPCargarProcesos2.setBackground(new java.awt.Color(0, 134, 190));
-
-        javax.swing.GroupLayout jPCargarProcesos2Layout = new javax.swing.GroupLayout(jPCargarProcesos2);
-        jPCargarProcesos2.setLayout(jPCargarProcesos2Layout);
-        jPCargarProcesos2Layout.setHorizontalGroup(
-            jPCargarProcesos2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPCargarProcesos2Layout.setVerticalGroup(
-            jPCargarProcesos2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 40, Short.MAX_VALUE)
-        );
-
-        CargarProcesosArchivo.setBackground(new java.awt.Color(0, 134, 190));
-        CargarProcesosArchivo.setFont(new java.awt.Font("Roboto Mono Medium for Powerline", 1, 13)); // NOI18N
-        CargarProcesosArchivo.setText("Cargar Procesos");
-        CargarProcesosArchivo.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                CargarProcesosArchivoMouseClicked(evt);
-            }
-        });
-        CargarProcesosArchivo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CargarProcesosArchivoActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jPCargarProcesos1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPCargarProcesos2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(CargarProcesosArchivo, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(20, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addComponent(CargarProcesosArchivo, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPCargarProcesos1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPCargarProcesos2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(10, Short.MAX_VALUE))
-        );
-
-        bg.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, 210, 150));
-
         TablaProcesos.setAutoCreateRowSorter(true);
         TablaProcesos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -214,13 +145,34 @@ public class UI extends javax.swing.JFrame {
             Class[] types = new Class [] {
                 java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
         });
-        TablaProcesos.setCellSelectionEnabled(true);
+        TablaProcesos.setComponentPopupMenu(jPopupMenu1);
+        TablaProcesos.setEditingColumn(0);
+        TablaProcesos.setEditingRow(0);
+        TablaProcesos.setFocusTraversalKeysEnabled(false);
+        TablaProcesos.setFocusTraversalPolicyProvider(true);
+        TablaProcesos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        TablaProcesos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        TablaProcesos.setShowGrid(true);
+        TablaProcesos.setShowHorizontalLines(true);
+        TablaProcesos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TablaProcesosMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(TablaProcesos);
+        TablaProcesos.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
         bg.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 100, 610, 140));
 
@@ -328,6 +280,78 @@ public class UI extends javax.swing.JFrame {
 
         bg.add(JPCrearProcesoManual, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 270, 210, 210));
 
+        jPanel1.setOpaque(false);
+
+        jPCargarProcesos1.setBackground(new java.awt.Color(0, 134, 190));
+
+        javax.swing.GroupLayout jPCargarProcesos1Layout = new javax.swing.GroupLayout(jPCargarProcesos1);
+        jPCargarProcesos1.setLayout(jPCargarProcesos1Layout);
+        jPCargarProcesos1Layout.setHorizontalGroup(
+            jPCargarProcesos1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPCargarProcesos1Layout.setVerticalGroup(
+            jPCargarProcesos1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 40, Short.MAX_VALUE)
+        );
+
+        jPCargarProcesos2.setBackground(new java.awt.Color(0, 134, 190));
+
+        javax.swing.GroupLayout jPCargarProcesos2Layout = new javax.swing.GroupLayout(jPCargarProcesos2);
+        jPCargarProcesos2.setLayout(jPCargarProcesos2Layout);
+        jPCargarProcesos2Layout.setHorizontalGroup(
+            jPCargarProcesos2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPCargarProcesos2Layout.setVerticalGroup(
+            jPCargarProcesos2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 40, Short.MAX_VALUE)
+        );
+
+        CargarProcesosArchivo.setBackground(new java.awt.Color(0, 134, 190));
+        CargarProcesosArchivo.setFont(new java.awt.Font("Roboto Mono Medium for Powerline", 1, 13)); // NOI18N
+        CargarProcesosArchivo.setText("Cargar Procesos");
+        CargarProcesosArchivo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                CargarProcesosArchivoMouseClicked(evt);
+            }
+        });
+        CargarProcesosArchivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CargarProcesosArchivoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jPCargarProcesos1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPCargarProcesos2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addComponent(CargarProcesosArchivo, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(20, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addComponent(CargarProcesosArchivo, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPCargarProcesos1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPCargarProcesos2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(10, Short.MAX_VALUE))
+        );
+
+        bg.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, 210, 150));
+
         userLabel1.setFont(new java.awt.Font("Roboto Light", 1, 14)); // NOI18N
         userLabel1.setText("Procesos");
         bg.add(userLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 70, -1, 20));
@@ -411,6 +435,17 @@ public class UI extends javax.swing.JFrame {
 //                       dt.addRow(temp.imprimirProcesos(";").split(";"));
                        
                    }
+                   //nuevo hilo para el planificador
+                   new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            planificador.procesarProcesos();
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        
+                    }
+                    }).start();
                    
                }
 
@@ -438,13 +473,18 @@ public class UI extends javax.swing.JFrame {
                                               duracionProceso, 
                                               entradaSalida);
                   planificador.agregarProceso(tempProceso);
-//                  DefaultTableModel dt = (DefaultTableModel)TablaProcesos.getModel();
-//                  dt.addRow(tempProceso.imprimirProcesos(";").split(";"));
-
-//                  procesoNombre.setText("");
-//                  procesoPrioridad.setText("");
-//                  procesoDuracion.setText("");
-//                  procesoES.setText("");                
+                   //nuevo hilo para el planificador
+                   new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            planificador.procesarProcesos();
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        
+                    }
+                    }).start();
+                   
 
         } catch (Exception e) {
               JOptionPane.showMessageDialog(rootPane, "Error al leer datos del proceso", "Dialog",JOptionPane.ERROR_MESSAGE);
@@ -467,6 +507,14 @@ public class UI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_procesoDuracionActionPerformed
 
+    private void TablaProcesosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TablaProcesosMouseClicked
+        // TODO add your handling code here:
+            JTable target = (JTable)evt.getSource();
+            int row = target.getSelectedRow();
+            int colum = target.getSelectedColumn();
+            JOptionPane.showMessageDialog(rootPane, "hiciste click en "+TablaProcesos.getValueAt(row, 0), "Dialog",JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_TablaProcesosMouseClicked
+
     public javax.swing.JTable getTablaProcesos(){
         return this.TablaProcesos;
     }
@@ -487,6 +535,7 @@ public class UI extends javax.swing.JFrame {
     private javax.swing.JPanel jPCargarProcesos1;
     private javax.swing.JPanel jPCargarProcesos2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JProgressBar jProgressBar2;
     private javax.swing.JProgressBar jProgressBar3;

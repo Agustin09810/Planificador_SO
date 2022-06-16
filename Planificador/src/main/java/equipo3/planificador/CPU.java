@@ -4,6 +4,7 @@
  */
 package equipo3.planificador;
 import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -24,10 +25,10 @@ public class CPU {
         this.procesoActual = proceso;
     }
 
-    public int procesarProceso(Proceso proc, int quantum, LinkedList<Proceso> bloqueados) {
+    public int procesarProceso(Proceso proc, int quantum, LinkedList<Proceso> bloqueados) throws InterruptedException {
         while (quantum > 0) {
-            if (proc.getEstado() == Estado.LISTO) {
-
+            if (proc.getEstado() == Estado.LISTO || proc.getEstado() == Estado.EJECUCION ) {
+                proc.setEstado(Estado.EJECUCION);
                 proc.decrementarTiempoRestante();
                 bloqueados.forEach((c) -> c.setTiempoBloqueado((Double) c.getTiempoBloqueado()- 1.d));
                 if (proc.getTiempoRestante() <= 0) {
@@ -41,7 +42,9 @@ public class CPU {
                 }
                 quantum--;
             }
+            TimeUnit.SECONDS.sleep(1);
         }
+
         return quantum;
     }
 }

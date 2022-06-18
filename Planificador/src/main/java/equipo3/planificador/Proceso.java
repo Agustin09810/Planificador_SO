@@ -2,32 +2,49 @@ package equipo3.planificador;
 
 import java.time.*;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
  * @author Equipo 3
  */
 public class Proceso {
+    private static final AtomicInteger count = new AtomicInteger(0);
     private int id;
+    private String nombre;
     private int prioridad;
     private int tiempoRestante;
-    private LocalDateTime tiempoCreacion = LocalDateTime.now();
+    private LocalTime tiempoCreacion = LocalTime.now();
+    private LocalTime tiempoFinalizado;
     private int tiempoEjecucionActual;
     private HashMap<Integer, Integer> entradaSalida = new HashMap<>();
     private Tipo tipo;
     private Estado estado;
-    // CADA CUANTO SE HACE ENTRADA Y SALIDA
+    private double tiempoBloqueado = 0.0;
 
-    // CUANTO TIEMPO EN ENTRADA Y SALIDA
-
-    // constructor
-
-    public Proceso(int id, int prioridad, Tipo tipo, int duracion, HashMap<Integer, Integer> entradaSalida) {
-        this.id = id;
+    public Proceso(String nombre, int prioridad, int duracion, HashMap<Integer, Integer> entradaSalida) {
+        this.id = count.incrementAndGet();
+        this.nombre = nombre;
         this.prioridad = prioridad;
-        this.tipo = tipo;
+        if(prioridad < 1 || prioridad > 99) {
+            System.out.println("ERROR: No se puede crear proceso, prioridad debe ser entre 1 y 99");
+            System.exit(1);
+        }
+        else if(prioridad >= 1 && prioridad <= 20){
+            this.prioridad = prioridad;
+            this.tipo = Tipo.TIEMPOREAL;
+        }
+        else if(prioridad >= 21 && prioridad <= 70){
+            this.prioridad = prioridad;
+            this.tipo = Tipo.INTERACTIVO;
+        }
+        else if(prioridad >= 71 && prioridad <= 99){
+            this.prioridad = prioridad;
+            this.tipo = Tipo.BATCH;
+        }
         this.tiempoRestante = duracion;
         this.entradaSalida = entradaSalida;
+        this.estado = Estado.LISTO;
     }
 
     public int getID() {
@@ -56,7 +73,7 @@ public class Proceso {
         return this.tiempoEjecucionActual;
     }
 
-    public LocalDateTime getTiempoCreacion() {
+    public LocalTime getTiempoCreacion() {
         return this.tiempoCreacion;
     }
 
@@ -79,8 +96,27 @@ public class Proceso {
     public void setTipo(Tipo tipo) {
         this.tipo = tipo;
     }
+    
+    public double getTiempoBloqueado() {
+        return tiempoBloqueado;
+    }
 
-    // METODO PARA SETEAR ESTADO
-
-    // METODO PARA DEVOLVER ESTADO
+    public void setTiempoBloqueado(double tiempoBloqueado) {
+        if(tiempoBloqueado <0) {
+            this.tiempoBloqueado = 0.0;
+        }else {
+            this.tiempoBloqueado = tiempoBloqueado;
+            
+        }
+    }
+    
+    public void tiempoFinalizadoAhora(){
+        this.tiempoFinalizado = LocalTime.now();
+    }
+    
+    public String imprimirProcesos(String separador){
+        
+        return this.id + separador + this.nombre + separador + this.tipo.toString() + separador + this.tiempoCreacion.toString() + separador + this.tiempoRestante + separador + this.estado.toString();
+    }
+    
 }

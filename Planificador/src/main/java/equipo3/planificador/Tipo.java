@@ -10,6 +10,6 @@ package equipo3.planificador;
  */
 public enum Tipo{
         TIEMPOREAL,
-        INTERACTIVOS,
+        INTERACTIVO,
         BATCH
 }

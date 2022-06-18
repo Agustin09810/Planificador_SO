@@ -6,12 +6,15 @@
 package equipo3.planificador;
 
 import java.util.LinkedList;
+import javax.swing.JProgressBar;
+import javax.swing.JTextArea;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author Administrador
  */
-public class Planificador {
+public class Planificador{
 
     private LinkedList<Proceso> tiempoReal = new LinkedList<>();
     private LinkedList<Proceso> interactivos = new LinkedList<>();
@@ -21,40 +24,173 @@ public class Planificador {
     private static final int QUANTUM_TIEMPO_REAL = 1;
     private static final int QUANTUM_INTERACTIVO = 2;
     private static final int QUANTUM_BATCH = 3;
+    private int totalInteractivos =0;
+    private JProgressBar progressInteractivos;
+    private DefaultTableModel tablaProcesos;
+    private JTextArea estados;
+    private CPU cpu = new CPU();
 
+    public Planificador(DefaultTableModel tablaProcesos, JProgressBar progressInteractivos, JTextArea estados ){
+        this.tablaProcesos = tablaProcesos;
+        this.progressInteractivos = progressInteractivos;
+        this.progressInteractivos.setValue(0);
+        this.progressInteractivos.setSize(500, 500);
+        this.progressInteractivos.setStringPainted(true);
+        this.estados = estados;
+    }
+    
     public boolean agregarProceso(Proceso proc) {
-        if (proc.getTipo() == Tipo.INTERACTIVOS) {
-            interactivos.add(proc);
-        } else if (proc.getTipo() == Tipo.BATCH) {
-            batch.add(proc);
-        } else {
+        if (null == proc.getTipo()) {
             return false;
+        } else switch (proc.getTipo()) {
+            case INTERACTIVO:
+                totalInteractivos++;
+                interactivos.add(proc);
+                interactivos.sort(new comparadorPrioridad());
+                break;
+            case BATCH:
+                batch.add(proc);
+                break;
+            case TIEMPOREAL:
+                tiempoReal.add(proc);
+                break;
+            default:
+                System.out.println("El proceso debe de ser de tipo TIEMPOREAL, INTERACTIVO o BATCH ");
+                return false;
         }
+        //cargarTablaProcesos();
         return true;
+        
     }
 
-    public void procesarProcesos() {
+    private void cargarTablaProcesos(){
+        tablaProcesos.setRowCount(0);
+        
+        LinkedList<Proceso> todos = new LinkedList<Proceso>();
+        todos.addAll(interactivos);
+        todos.addAll(tiempoReal);
+        todos.addAll(batch);
+        todos.addAll(finalizados);
+        todos.addAll(bloqueados);
+        for(Proceso actual : todos){
+            this.tablaProcesos.addRow(actual.imprimirProcesos(";").split(";"));
+        }
+        progressInteractivos.setValue(100 - (int)interactivos.size() * 100 / totalInteractivos);
+        
+                
+    }
+    
+    public void procesarProcesos() throws InterruptedException {
         Proceso proc;
+        
         while (!tiempoReal.isEmpty() || !interactivos.isEmpty() || !batch.isEmpty()) {
-
-            if (!tiempoReal.isEmpty()) {
-                proc = tiempoReal.removeFirst();
-                tiempoReal.add(proc);
-                if (proc.getTiempoRestante() == 0) {
-                    finalizados.add(proc);
-                } else {
-                    bloqueados.add(proc);
-                }
+            cargarTablaProcesos();
+            //Verificar si tiemporeal no es vacía.
+            // comienzo RoundRobin
+            
+            if(!tiempoReal.isEmpty()){
+                Proceso procesoActual = tiempoReal.getFirst();
+                System.out.println("Procesando.. "+procesoActual.imprimirProcesos("-"));
+                estados.append("Procesando "+procesoActual.getID()+"\n");
+                int resto = cpu.procesarProceso(procesoActual, QUANTUM_TIEMPO_REAL, bloqueados); //??
+                reasignarProcesos(procesoActual, tiempoReal);
+                chequearBloqueados(tiempoReal);
+                continue;
             }
-            if (!batch.isEmpty()) {
-                proc = batch.removeFirst();
-                tiempoReal.add(proc);
-                if (proc.getTiempoRestante() == 0) {
-                    finalizados.add(proc);
-                } else {
-                    bloqueados.add(proc);
+            else if(!interactivos.isEmpty()){ //HRN
+                Proceso procesoActual = interactivos.getFirst(); //agarra el primero de la lista de interactivos(el que tiene mas prioridad)
+                System.out.println("Procesando.. "+procesoActual.imprimirProcesos("-"));
+                int resto = cpu.procesarProceso(procesoActual, QUANTUM_INTERACTIVO, bloqueados); //lo manda al procesador para que lo procese
+                reasignarProcesos(procesoActual, interactivos); //Una vez terminado, se llama al proceso reasignarProcesos
+                chequearBloqueados(interactivos); //proceso cheaquear bloqueados
+                if(procesoActual.getEstado() == Estado.LISTO) //Si el proceso no se termino ni se bloqueo, se baja en uno su prioridad debido a que ya tuvo tiempo de CPU. para cumplir con el HRN
+                    procesoActual.setPrioridad(procesoActual.getPrioridad() - 1);
+                interactivos.sort(new comparadorPrioridad()); //Se reordenan los proceso por prioridad por si hubo algun cambio
+                continue;
+            }
+            else if(!batch.isEmpty()){
+                Proceso procesoActual = batch.getFirst();
+                System.out.println("Procesando.. "+procesoActual.imprimirProcesos("-"));
+                int resto = cpu.procesarProceso(procesoActual, QUANTUM_BATCH, bloqueados);
+                reasignarProcesos(procesoActual, batch);
+                chequearBloqueados(batch);
+                batch.sort(new comparadorTiempo()); //Se reordenan por orden de llegada, por si hubo algun cambio en la lista.
+                continue;
+            }
+            
+        }
+        cargarTablaProcesos();
+    }
+    
+    public void reasignarProcesos(Proceso proc, LinkedList<Proceso> listaProcesos) {
+        if(proc.getEstado() == Estado.FINALIZADO){
+            listaProcesos.remove(proc);
+            proc.tiempoFinalizadoAhora();
+            finalizados.add(proc);                    
+        } else if(proc.getEstado() == Estado.BLOQUEADO) {
+            listaProcesos.remove(proc);
+            bloqueados.add(proc);
+        }
+    }
+    public void chequearBloqueados(LinkedList<Proceso> listaProcesos){
+        if(!bloqueados.isEmpty()){
+            for(Proceso p : bloqueados){
+                if(p.getTiempoBloqueado()==0){
+                    bloqueados.remove(p);
+                    listaProcesos.add(p);
                 }
             }
         }
     }
+    
+    public void cambiarPrioridad(Proceso proc, int prioridad){
+        if(prioridad < 1 || prioridad > 99){
+            System.out.println("ERROR: No se puede crear proceso, prioridad debe ser entre 1 y 99");
+            System.exit(1);
+        }
+        else if(prioridad >= 1 && prioridad <= 20){
+            proc.setPrioridad(prioridad);
+            proc.setTipo(Tipo.TIEMPOREAL);
+            if(!tiempoReal.contains(proc)){
+                tiempoReal.add(proc);
+            }
+        }
+        else if(prioridad >= 21 && prioridad <= 70){
+            proc.setPrioridad(prioridad);
+            proc.setTipo(Tipo.INTERACTIVO);
+            cambiarPrioridadAux(proc);
+            interactivos.add(proc);
+            interactivos.sort(new comparadorPrioridad());
+        }
+        else if(prioridad >= 71 && prioridad <= 99){
+            proc.setPrioridad(prioridad);
+            proc.setTipo(Tipo.BATCH);
+            cambiarPrioridadAux(proc);
+            batch.add(proc);
+            batch.sort(new comparadorTiempo());
+        }
+        //QUE PASA CON LOS BLOQUEADOS?????????????
+    }
+    
+    public void cambiarPrioridadAux(Proceso proc){
+        if(tiempoReal.contains(proc))
+            return;
+        if(interactivos.contains(proc))
+            interactivos.remove(proc);
+        if(batch.contains(proc))
+            batch.remove(proc);
+    }
+    
+    public void bloqueoManual(Proceso proc){
+        proc.setEstado(Estado.BLOQUEADO);
+        if(tiempoReal.contains(proc))
+            tiempoReal.remove(proc);
+        if(interactivos.contains(proc))
+            interactivos.remove(proc);
+        if(batch.contains(proc))
+            batch.remove(proc);
+        proc.setTiempoBloqueado(Double.POSITIVE_INFINITY);
+        bloqueados.add(proc);
+    }
+            
 }

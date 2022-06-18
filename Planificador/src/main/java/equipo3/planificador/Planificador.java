@@ -6,6 +6,8 @@
 package equipo3.planificador;
 
 import java.util.LinkedList;
+import javax.swing.JProgressBar;
+import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -22,11 +24,19 @@ public class Planificador{
     private static final int QUANTUM_TIEMPO_REAL = 1;
     private static final int QUANTUM_INTERACTIVO = 2;
     private static final int QUANTUM_BATCH = 3;
+    private int totalInteractivos =0;
+    private JProgressBar progressInteractivos;
     private DefaultTableModel tablaProcesos;
+    private JTextArea estados;
     private CPU cpu = new CPU();
 
-    public Planificador(DefaultTableModel tablaProcesos){
+    public Planificador(DefaultTableModel tablaProcesos, JProgressBar progressInteractivos, JTextArea estados ){
         this.tablaProcesos = tablaProcesos;
+        this.progressInteractivos = progressInteractivos;
+        this.progressInteractivos.setValue(0);
+        this.progressInteractivos.setSize(500, 500);
+        this.progressInteractivos.setStringPainted(true);
+        this.estados = estados;
     }
     
     public boolean agregarProceso(Proceso proc) {
@@ -34,6 +44,7 @@ public class Planificador{
             return false;
         } else switch (proc.getTipo()) {
             case INTERACTIVO:
+                totalInteractivos++;
                 interactivos.add(proc);
                 interactivos.sort(new comparadorPrioridad());
                 break;
@@ -64,7 +75,9 @@ public class Planificador{
         for(Proceso actual : todos){
             this.tablaProcesos.addRow(actual.imprimirProcesos(";").split(";"));
         }
-
+        progressInteractivos.setValue(100 - (int)interactivos.size() * 100 / totalInteractivos);
+        
+                
     }
     
     public void procesarProcesos() throws InterruptedException {
@@ -78,6 +91,7 @@ public class Planificador{
             if(!tiempoReal.isEmpty()){
                 Proceso procesoActual = tiempoReal.getFirst();
                 System.out.println("Procesando.. "+procesoActual.imprimirProcesos("-"));
+                estados.append("Procesando "+procesoActual.getID()+"\n");
                 int resto = cpu.procesarProceso(procesoActual, QUANTUM_TIEMPO_REAL, bloqueados); //??
                 reasignarProcesos(procesoActual, tiempoReal);
                 chequearBloqueados(tiempoReal);

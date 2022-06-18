@@ -19,7 +19,7 @@ public class UI extends javax.swing.JFrame {
     public UI() {
         initComponents();
         DefaultTableModel tablaProcesos = (DefaultTableModel)TablaProcesos.getModel();
-        this.planificador = new Planificador(tablaProcesos);
+        this.planificador = new Planificador(tablaProcesos, ProgressInteractivos, status);
     }
     
     public UI(Planificador planificador) {
@@ -56,9 +56,13 @@ public class UI extends javax.swing.JFrame {
         jPCargarProcesos2 = new javax.swing.JPanel();
         CargarProcesosArchivo = new javax.swing.JButton();
         userLabel1 = new javax.swing.JLabel();
-        jProgressBar1 = new javax.swing.JProgressBar();
-        jProgressBar2 = new javax.swing.JProgressBar();
+        jLayeredPane1 = new javax.swing.JLayeredPane();
+        ProgressInteractivos = new javax.swing.JProgressBar();
         jProgressBar3 = new javax.swing.JProgressBar();
+        jProgressBar1 = new javax.swing.JProgressBar();
+        userLabel3 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        status = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setLocationByPlatform(true);
@@ -165,7 +169,6 @@ public class UI extends javax.swing.JFrame {
         TablaProcesos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         TablaProcesos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         TablaProcesos.setShowGrid(true);
-        TablaProcesos.setShowHorizontalLines(true);
         TablaProcesos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 TablaProcesosMouseClicked(evt);
@@ -176,6 +179,7 @@ public class UI extends javax.swing.JFrame {
 
         bg.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 100, 610, 140));
 
+        JPCrearProcesoManual.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         JPCrearProcesoManual.setOpaque(false);
 
         jLabel2.setText("Prioridad");
@@ -225,7 +229,7 @@ public class UI extends javax.swing.JFrame {
                 .addGroup(JPCrearProcesoManualLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(JPCrearProcesoManualLayout.createSequentialGroup()
                         .addComponent(userLabel2)
-                        .addContainerGap(15, Short.MAX_VALUE))
+                        .addContainerGap(13, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JPCrearProcesoManualLayout.createSequentialGroup()
                         .addGroup(JPCrearProcesoManualLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(JPCrearProcesoManualLayout.createSequentialGroup()
@@ -269,7 +273,7 @@ public class UI extends javax.swing.JFrame {
                 .addGroup(JPCrearProcesoManualLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(procesoDuracion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(JPCrearProcesoManualLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(procesoES, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
@@ -278,7 +282,7 @@ public class UI extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        bg.add(JPCrearProcesoManual, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 270, 210, 210));
+        bg.add(JPCrearProcesoManual, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 270, 210, 220));
 
         jPanel1.setOpaque(false);
 
@@ -334,9 +338,9 @@ public class UI extends javax.swing.JFrame {
                             .addComponent(jPCargarProcesos1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPCargarProcesos2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
+                        .addGap(21, 21, 21)
                         .addComponent(CargarProcesosArchivo, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -350,14 +354,64 @@ public class UI extends javax.swing.JFrame {
                 .addContainerGap(10, Short.MAX_VALUE))
         );
 
-        bg.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, 210, 150));
+        bg.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 100, 220, 150));
 
         userLabel1.setFont(new java.awt.Font("Roboto Light", 1, 14)); // NOI18N
         userLabel1.setText("Procesos");
         bg.add(userLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 70, -1, 20));
-        bg.add(jProgressBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 370, 220, 30));
-        bg.add(jProgressBar2, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 290, 220, 30));
-        bg.add(jProgressBar3, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 330, 220, 30));
+
+        jLayeredPane1.setBorder(javax.swing.BorderFactory.createTitledBorder("Estado de colas"));
+
+        ProgressInteractivos.setMinimumSize(new java.awt.Dimension(10, 10));
+
+        userLabel3.setFont(new java.awt.Font("Roboto Light", 1, 14)); // NOI18N
+        userLabel3.setText("Interactivos");
+
+        jLayeredPane1.setLayer(ProgressInteractivos, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane1.setLayer(jProgressBar3, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane1.setLayer(jProgressBar1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane1.setLayer(userLabel3, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+        javax.swing.GroupLayout jLayeredPane1Layout = new javax.swing.GroupLayout(jLayeredPane1);
+        jLayeredPane1.setLayout(jLayeredPane1Layout);
+        jLayeredPane1Layout.setHorizontalGroup(
+            jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jLayeredPane1Layout.createSequentialGroup()
+                .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jLayeredPane1Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jProgressBar3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jProgressBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jLayeredPane1Layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(userLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                        .addComponent(ProgressInteractivos, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jLayeredPane1Layout.setVerticalGroup(
+            jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jLayeredPane1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(ProgressInteractivos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(userLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jProgressBar3, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        bg.add(jLayeredPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 240, 380, 100));
+
+        status.setEditable(false);
+        status.setColumns(20);
+        status.setRows(5);
+        jScrollPane2.setViewportView(status);
+
+        bg.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 350, 450, 140));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -431,8 +485,6 @@ public class UI extends javax.swing.JFrame {
                                            Integer.parseInt(proceso[2]), 
                                            entradaSalida);
                        planificador.agregarProceso(temp);
-//                       DefaultTableModel dt = (DefaultTableModel)TablaProcesos.getModel();
-//                       dt.addRow(temp.imprimirProcesos(";").split(";"));
                        
                    }
                    //nuevo hilo para el planificador
@@ -463,11 +515,17 @@ public class UI extends javax.swing.JFrame {
                 prioridadProceso = Integer.parseInt(procesoPrioridad.getText());
                 duracionProceso = Integer.parseInt(procesoDuracion.getText());
                 HashMap<Integer,Integer> entradaSalida = new HashMap();
-                for(String es : esProceso.split(",")){
+                if(esProceso.isBlank()){
+                    entradaSalida.put(0, 20);
+                } else {
+                  for(String es : esProceso.split(",")){
                     String key = es.split(":")[0];
                     String value = es.split(":")[1];
                     entradaSalida.put(Integer.getInteger(key), Integer.getInteger(value));
-                  }                       
+                  }
+                    
+                }
+                       
                   Proceso tempProceso =  new Proceso(nombreProceso, 
                                               prioridadProceso, 
                                               duracionProceso, 
@@ -522,6 +580,7 @@ public class UI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton CargarProcesosArchivo;
     private javax.swing.JPanel JPCrearProcesoManual;
+    private javax.swing.JProgressBar ProgressInteractivos;
     private javax.swing.JTable TablaProcesos;
     private javax.swing.JPanel bg;
     private javax.swing.JPanel exitBtn;
@@ -532,21 +591,24 @@ public class UI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JPanel jPCargarProcesos1;
     private javax.swing.JPanel jPCargarProcesos2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JProgressBar jProgressBar1;
-    private javax.swing.JProgressBar jProgressBar2;
     private javax.swing.JProgressBar jProgressBar3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField procesoDuracion;
     private javax.swing.JTextField procesoES;
     private javax.swing.JTextField procesoNombre;
     private javax.swing.JTextField procesoPrioridad;
+    private javax.swing.JTextArea status;
     private javax.swing.JLabel title;
     private javax.swing.JLabel userLabel;
     private javax.swing.JLabel userLabel1;
     private javax.swing.JLabel userLabel2;
+    private javax.swing.JLabel userLabel3;
     // End of variables declaration//GEN-END:variables
 }

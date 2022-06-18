@@ -478,7 +478,7 @@ public class UI extends javax.swing.JFrame {
                        for(String es : proceso[3].split(",")){
                            String key = es.split(":")[0];
                            String value = es.split(":")[1];
-                         entradaSalida.put(Integer.getInteger(key), Integer.getInteger(value));
+                         entradaSalida.put(Integer.parseInt(key), Integer.parseInt(value));
                        }                       
                        Proceso temp =  new Proceso(proceso[0], 
                                            Integer.parseInt(proceso[1]), 

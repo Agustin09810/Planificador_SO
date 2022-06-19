@@ -51,6 +51,9 @@ private HashMap<Integer, Integer> entradaSalida = new HashMap<>();
         return this.id;
     }
 
+    public String getNombre() {
+        return this.nombre;
+    }
     public void setPrioridad(int prioridad) {
         this.prioridad = prioridad;
     }
@@ -118,5 +121,4 @@ private HashMap<Integer, Integer> entradaSalida = new HashMap<>();
         
         return this.id + separador + this.nombre + separador + this.tipo.toString() + separador + this.tiempoCreacion.toString() + separador + this.tiempoRestante + separador + this.estado.toString();
     }
-    
 }

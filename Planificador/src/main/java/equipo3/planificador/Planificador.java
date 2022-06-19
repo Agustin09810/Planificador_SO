@@ -11,8 +11,11 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -28,20 +31,37 @@ public class Planificador{
     private static final int QUANTUM_TIEMPO_REAL = 1;
     private static final int QUANTUM_INTERACTIVO = 2;
     private static final int QUANTUM_BATCH = 3;
+    private CPU cpu = new CPU();
     private boolean enEjecucion = false;
-    private int totalInteractivos =0;
+    private int totalTiempoReal=0;
+    private int totalInteractivos=0;
+    private int totalBatch=0;
+    private boolean tableUpdateStatus = true;
+    //Componentes UI
     private JLabel estadoPlanificador;
+    private JProgressBar progressTiempoReal;
     private JProgressBar progressInteractivos;
+    private JProgressBar progressBatch;
     private DefaultTableModel tablaProcesos;
     private JTextArea estados;
-    private CPU cpu = new CPU();
+    private DefaultTableModel tablaBloqueados;
+    
 
-    public Planificador(DefaultTableModel tablaProcesos, JProgressBar progressInteractivos, JTextArea estados, JLabel estadoPlanificador ){
+    public Planificador(DefaultTableModel tablaProcesos, DefaultTableModel tablaBloqueados, JProgressBar progressTiempoReal ,JProgressBar progressInteractivos, JProgressBar progressBatch, JTextArea estados, JLabel estadoPlanificador ){
         this.tablaProcesos = tablaProcesos;
+        this.tablaBloqueados =  tablaBloqueados;
+        this.progressTiempoReal = progressTiempoReal;
+        this.progressTiempoReal.setStringPainted(true);
+        this.progressTiempoReal.setValue(0);
+
         this.progressInteractivos = progressInteractivos;
-        this.progressInteractivos.setValue(0);
-        this.progressInteractivos.setSize(500, 500);
         this.progressInteractivos.setStringPainted(true);
+        this.progressInteractivos.setValue(0);
+        
+        this.progressBatch = progressBatch;
+        this.progressBatch.setStringPainted(true);
+        this.progressBatch.setValue(0);
+        
         this.estados = estados;
         this.estadoPlanificador = estadoPlanificador;
     }
@@ -52,17 +72,21 @@ public class Planificador{
         } else switch (proc.getTipo()) {
             case INTERACTIVO:
                 totalInteractivos++;
+                estados.append("Proceso "+proc.getNombre()+"con ID "+proc.getID()+" se agregó a cola de interactivos \n");
                 interactivos.add(proc);
                 interactivos.sort(new comparadorPrioridad());
                 break;
             case BATCH:
+                totalBatch++;
+                estados.append("Proceso "+proc.getNombre()+"con ID "+proc.getID()+" se agregó a cola de batch \n");
                 batch.add(proc);
                 break;
             case TIEMPOREAL:
+                totalTiempoReal++;
+                estados.append("Proceso "+proc.getNombre()+"con ID "+proc.getID()+" se agregó a cola de tiempo real \n");
                 tiempoReal.add(proc);
                 break;
             default:
-                System.out.println("El proceso debe de ser de tipo TIEMPOREAL, INTERACTIVO o BATCH ");
                 return false;
         }
         //cargarTablaProcesos();
@@ -70,36 +94,60 @@ public class Planificador{
         
     }
 
-    private void actualizarComponentesUI(){
+    public void actualizarComponentesUI(){
         
-        //tablaProcesos.set
-        if(tablaProcesos.getRowCount()>0){
-            tablaProcesos.setRowCount(0);
-        }
-        //tablaProcesos.setRowCount(0);
+        //Actualización asíncrona de tabla de procesos
+        SwingUtilities.invokeLater(new Runnable(){public void run(){
+            //cuando el mouse se posiciona sobre la tabla se detiene la edicion para poder seleccionar mejor los procesos
+            if(tableUpdateStatus){
+                if(tablaProcesos.getRowCount()>0){
+                   tablaProcesos.setRowCount(0);
+                   tablaProcesos.fireTableDataChanged();
+                }
+                LinkedList<Proceso> todos = new LinkedList<Proceso>();
+                todos.addAll(interactivos);
+                todos.addAll(tiempoReal);
+                todos.addAll(batch);
+                todos.addAll(finalizados);
+                todos.addAll(bloqueados);
+                for(Proceso actual : todos){
+                    tablaProcesos.addRow(actual.imprimirProcesos(";").split(";"));
+                    
+                    tablaProcesos.fireTableDataChanged();
+                } 
+            }
+            
+            // actualizo tabla de bloqueados
+            if(tablaBloqueados.getRowCount()>0){
+                   tablaBloqueados.setRowCount(0);
+                   tablaBloqueados.fireTableDataChanged();
+            }
+            for(Proceso procesoBloqueado : bloqueados){
+                tablaBloqueados.addRow(new String[]{String.valueOf(procesoBloqueado.getID()),String.valueOf(procesoBloqueado.getTiempoBloqueado())});
+                tablaBloqueados.fireTableDataChanged();
+            }
+        }});
+        
+        //progressBar
+        if(totalTiempoReal != 0)
+        progressTiempoReal.setValue(100 - (int)tiempoReal.size() * 100 / totalTiempoReal);
+       
+        if(totalInteractivos != 0)
+        progressInteractivos.setValue(100 - (int)interactivos.size() * 100 / totalInteractivos);        
+       
+        if(totalBatch != 0)
+        progressBatch.setValue(100 - (int)batch.size() * 100 / totalBatch);   
+
+        // Etiqueta de estado del planificador
         if(this.enEjecucion){
             estadoPlanificador.setForeground(Color.green);
             estadoPlanificador.setText("En Ejecucion..");
-        if(!this.enEjecucion && (!tiempoReal.isEmpty() || !interactivos.isEmpty() || !batch.isEmpty())){
-            estadoPlanificador.setForeground(Color.yellow);
-            estadoPlanificador.setText("En Pausa");
-        }
+
+        //No a comenzado o finalizo
         } else {
             estadoPlanificador.setForeground(Color.red);
             estadoPlanificador.setText("DETENIDO");
         }
-        LinkedList<Proceso> todos = new LinkedList<Proceso>();
-        todos.addAll(interactivos);
-        todos.addAll(tiempoReal);
-        todos.addAll(batch);
-        todos.addAll(finalizados);
-        todos.addAll(bloqueados);
-        for(Proceso actual : todos){
-            System.out.println(actual.imprimirProcesos(";"));
-            this.tablaProcesos.addRow(actual.imprimirProcesos(";").split(";"));
-        }
-        progressInteractivos.setValue(100 - (int)interactivos.size() * 100 / totalInteractivos);
-        
                 
     }
     
@@ -113,17 +161,18 @@ public class Planificador{
             
             if(!tiempoReal.isEmpty()){
                 Proceso procesoActual = tiempoReal.getFirst();
-                System.out.println("Procesando.. "+procesoActual.imprimirProcesos("-"));
-                estados.append("Procesando "+procesoActual.getID()+"\n");
+                estados.append("Proceso "+procesoActual.getNombre()+" con ID "+procesoActual.getID()+" ingreso al CPU \n");
                 int resto = cpu.procesarProceso(procesoActual, QUANTUM_TIEMPO_REAL, bloqueados); //??
+                estados.append("Proceso "+procesoActual.getNombre()+" con ID "+procesoActual.getID()+" salió del CPU \n");
                 reasignarProcesos(procesoActual, tiempoReal);
                 chequearBloqueados();
                 continue;
             }
             else if(!interactivos.isEmpty()){ //HRN
                 Proceso procesoActual = interactivos.getFirst(); //agarra el primero de la lista de interactivos(el que tiene mas prioridad)
-                System.out.println("Procesando.. "+procesoActual.imprimirProcesos("-"));
+                estados.append("Proceso "+procesoActual.getNombre()+" con ID "+procesoActual.getID()+" ingreso al CPU \n");
                 int resto = cpu.procesarProceso(procesoActual, QUANTUM_INTERACTIVO, bloqueados); //lo manda al procesador para que lo procese
+                estados.append("Proceso "+procesoActual.getNombre()+" con ID "+procesoActual.getID()+" salió del CPU \n");
                 reasignarProcesos(procesoActual, interactivos); //Una vez terminado, se llama al proceso reasignarProcesos
                 chequearBloqueados(); //proceso cheaquear bloqueados
                 if(procesoActual.getEstado() == Estado.EJECUCION) //Si el proceso no se termino ni se bloqueo, se baja en uno su prioridad debido a que ya tuvo tiempo de CPU. para cumplir con el HRN
@@ -137,8 +186,9 @@ public class Planificador{
             }
             else if(!batch.isEmpty()){
                 Proceso procesoActual = batch.getFirst();
-                System.out.println("Procesando.. "+procesoActual.imprimirProcesos("-"));
+                estados.append("Proceso "+procesoActual.getNombre()+" con ID "+procesoActual.getID()+" ingreso al CPU \n");
                 int resto = cpu.procesarProceso(procesoActual, QUANTUM_BATCH, bloqueados);
+                estados.append("Proceso "+procesoActual.getNombre()+" con ID "+procesoActual.getID()+" salió del CPU \n");
                 reasignarProcesos(procesoActual, batch);
                 chequearBloqueados();
                 batch.sort(new comparadorTiempo()); //Se reordenan por orden de llegada, por si hubo algun cambio en la lista.
@@ -176,9 +226,11 @@ public class Planificador{
         if(proc.getEstado() == Estado.FINALIZADO){
             listaProcesos.remove(proc);
             proc.tiempoFinalizadoAhora();
+            estados.append("Proceso "+proc.getNombre()+" con ID "+proc.getID()+" finalizó \n");
             finalizados.add(proc);                    
         } else if(proc.getEstado() == Estado.BLOQUEADO) {
             listaProcesos.remove(proc);
+            estados.append("Proceso "+proc.getNombre()+" con ID "+proc.getID()+" ingresó a cola de bloqueados \n");
             bloqueados.add(proc);
         }
     }
@@ -190,6 +242,7 @@ public class Planificador{
                     if(p.getTiempoBloqueado()<= 0.d){
                         iterador.remove();
                         p.setEstado(Estado.LISTO);
+                        estados.append("Proceso "+p.getNombre()+" con ID "+p.getID()+" salió de cola de bloqueados \n");
                         tiempoReal.add(p);
                     }
                 }
@@ -197,6 +250,7 @@ public class Planificador{
                     if(p.getTiempoBloqueado()<= 0.d){
                         iterador.remove();
                         p.setEstado(Estado.LISTO);
+                        estados.append("Proceso "+p.getNombre()+" con ID "+p.getID()+" salió de cola de bloqueados \n");
                         interactivos.add(p);
                     }
                 }
@@ -204,6 +258,7 @@ public class Planificador{
                     if(p.getTiempoBloqueado()<= 0.d){
                         iterador.remove();
                         p.setEstado(Estado.LISTO);
+                        estados.append("Proceso "+p.getNombre()+" con ID "+p.getID()+" salió de cola de bloqueados \n");
                         batch.add(p);
                     }
                 }
@@ -211,16 +266,16 @@ public class Planificador{
         }
     }
     
-    public void cambiarPrioridad(Proceso proc, int prioridad){
+    public boolean cambiarPrioridad(Proceso proc, int prioridad){
         if(prioridad < 1 || prioridad > 99){
-            System.out.println("ERROR: No se puede crear proceso, prioridad debe ser entre 1 y 99");
-            System.exit(1);
+            return false;
         }
         else if(prioridad >= 1 && prioridad <= 20){
             proc.setPrioridad(prioridad);
             proc.setTipo(Tipo.TIEMPOREAL);
             if(!tiempoReal.contains(proc)){
                 cambiarPrioridadAux(proc);
+                estados.append("Proceso "+proc.getNombre()+" con ID "+proc.getID()+" Ahora es de tipo tiempo real \n");
                 tiempoReal.add(proc);
             }
         }
@@ -229,6 +284,7 @@ public class Planificador{
             proc.setTipo(Tipo.INTERACTIVO);
             if(!interactivos.contains(proc)){
                 cambiarPrioridadAux(proc);
+                estados.append("Proceso "+proc.getNombre()+" con ID "+proc.getID()+" Ahora es de tipo interactivo \n");
                 interactivos.add(proc);
             }
             interactivos.sort(new comparadorPrioridad());
@@ -238,10 +294,12 @@ public class Planificador{
             proc.setTipo(Tipo.BATCH);
             if(!batch.contains(proc)){
                 cambiarPrioridadAux(proc);
+                estados.append("Proceso "+proc.getNombre()+" con ID "+proc.getID()+" Ahora es de tipo tiempo batch \n");
                 batch.add(proc);
             }
             batch.sort(new comparadorTiempo());
         }
+        return true;
         //QUE PASA CON LOS BLOQUEADOS?????????????
     }
     
@@ -254,25 +312,30 @@ public class Planificador{
             batch.remove(proc);
     }
     
-    public void bloqueoManual(Proceso proc){
-        proc.setEstado(Estado.BLOQUEADO);
-        if(tiempoReal.contains(proc))
-            tiempoReal.remove(proc);
-        if(interactivos.contains(proc))
-            interactivos.remove(proc);
-        if(batch.contains(proc))
-            batch.remove(proc);
-        proc.setTiempoBloqueado(Double.POSITIVE_INFINITY);
-        bloqueados.add(proc);
+    public void bloqueoManual(Proceso proc, boolean bloquear){
+        if(bloquear){
+            proc.setEstado(Estado.BLOQUEADO);
+            if(tiempoReal.contains(proc))
+                tiempoReal.remove(proc);
+            if(interactivos.contains(proc))
+                interactivos.remove(proc);
+            if(batch.contains(proc))
+                batch.remove(proc);
+            proc.setTiempoBloqueado(Double.POSITIVE_INFINITY);
+            if(!bloqueados.contains(proc))
+                bloqueados.add(proc);
+        } else {
+            proc.setTiempoBloqueado(0.d);
+            chequearBloqueados();
+        }
+        actualizarComponentesUI();
+
     }
     
-    public boolean vaciarColas(){
+    public boolean limpiarFinalizados(){
         if(!enEjecucion){
-//            this.tiempoReal.clear();
-//            this.interactivos.clear();
-//            this.batch.clear();
-//            this.bloqueados.clear();
             this.finalizados.clear();
+            actualizarComponentesUI();
             return true;
         }
         return false;
@@ -282,11 +345,25 @@ public class Planificador{
         return this.enEjecucion;
     }
     
-    public void pausarRenaudarPlanificador(){
-        if(this.enEjecucion){
-            this.enEjecucion = false;
+    public Proceso getProcesoPorId(String id) {
+       LinkedList<Proceso> todos = new LinkedList<Proceso>();
+        todos.addAll(interactivos);
+        todos.addAll(tiempoReal);
+        todos.addAll(batch);
+        todos.addAll(bloqueados);
+        for(Proceso proceso : todos){
+            if(proceso.getID() == Integer.parseInt(id)){
+                return proceso;
+            }
+        }
+        return null;
+    }
+    
+    public void setTableUpdate(boolean status){
+        if(status){
+            tableUpdateStatus=true;
         } else {
-            this.enEjecucion = true;
+            tableUpdateStatus=false;
         }
     }
             

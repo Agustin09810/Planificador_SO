@@ -240,6 +240,7 @@ public class ModificarProcesos extends javax.swing.JDialog {
                         planificador.bloqueoManual(proceso, false);
                         //nuevo hilo para el planificador // caso en el que todos los procesos finalizaron y se va a procesar el bloqueado por usuario
                         if(!planificador.getEstadoPlanificador()){
+                            planificador.actualizarComponentesUI();
                              new Thread(new Runnable() {
                                  public void run() {
                                      try {

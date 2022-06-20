@@ -637,6 +637,10 @@ public class UI extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(rootPane, "No se puede ingresar un proceso manual con prioridad <20.\n Ingresado como interactivo con prioridad 21", "Dialog",JOptionPane.WARNING_MESSAGE);
                     prioridadProceso=21;
                 }
+                if(prioridadProceso > 99){
+                    JOptionPane.showMessageDialog(rootPane, "No se puede ingresar un proceso manual con prioridad >99.\n Ingresado como interactivo con prioridad 21", "Dialog",JOptionPane.WARNING_MESSAGE);
+                    prioridadProceso=21;
+                }
                 duracionProceso = Integer.parseInt(procesoDuracion.getText());
                 HashMap<Integer,Integer> entradaSalida = new HashMap();
                 if(esProceso.isBlank()){
@@ -710,7 +714,7 @@ public class UI extends javax.swing.JFrame {
                        bloqueadoPorUsuario = true;
                    }
                    ModificarProcesos dialog = new ModificarProcesos(new javax.swing.JFrame(), true,String.valueOf(proc.getID()),String.valueOf(proc.getNombre()),String.valueOf(proc.getPrioridad()),bloqueadoPorUsuario,proc.getTipo(), planificador);
-                   //dialog.setLocationRelativeTo(bg);
+                   dialog.setLocationRelativeTo(bg);
                    dialog.setVisible(true);
                 } else {
                     JOptionPane.showMessageDialog(rootPane, "No es posible editar el proceso "+id+" Porque su estado es Finalizado", "Editar Proceso",JOptionPane.INFORMATION_MESSAGE);
@@ -725,6 +729,7 @@ public class UI extends javax.swing.JFrame {
 
     private void limpiarFinalizadosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_limpiarFinalizadosMouseClicked
         // TODO add your handling code here:
+        planificador.limpiarFinalizados();
     }//GEN-LAST:event_limpiarFinalizadosMouseClicked
 
     private void limpiarFinalizadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_limpiarFinalizadosActionPerformed
@@ -740,6 +745,7 @@ public class UI extends javax.swing.JFrame {
     private void TablaProcesosMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TablaProcesosMouseExited
         // TODO add your handling code here:
         planificador.setTableUpdate(true);
+        planificador.actualizarComponentesUI();
     }//GEN-LAST:event_TablaProcesosMouseExited
 
     private void exitTxtMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_exitTxtMousePressed

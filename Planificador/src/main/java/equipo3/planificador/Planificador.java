@@ -123,7 +123,12 @@ public class Planificador{
                    tablaBloqueados.fireTableDataChanged();
             }
             for(Proceso procesoBloqueado : bloqueados){
-                tablaBloqueados.addRow(new String[]{String.valueOf(procesoBloqueado.getID()),String.valueOf(procesoBloqueado.getTiempoBloqueado())});
+                String tipoBloqueo = "E/S";
+                
+                if(procesoBloqueado.getTiempoBloqueado() == Double.POSITIVE_INFINITY){
+                    tipoBloqueo = "Usuario";
+                }
+                tablaBloqueados.addRow(new String[]{String.valueOf(procesoBloqueado.getID()),String.valueOf(procesoBloqueado.getTiempoBloqueado()),tipoBloqueo});
                 tablaBloqueados.fireTableDataChanged();
             }
         }});
@@ -333,6 +338,7 @@ public class Planificador{
             proc.setTiempoBloqueado(0.d);
             chequearBloqueados();
         }
+        
         actualizarComponentesUI();
 
     }

@@ -163,6 +163,11 @@ public class Planificador{
                 Proceso procesoActual = tiempoReal.getFirst();
                 estados.append("Proceso "+procesoActual.getNombre()+" con ID "+procesoActual.getID()+" ingreso al CPU \n");
                 int resto = cpu.procesarProceso(procesoActual, QUANTUM_TIEMPO_REAL, bloqueados); //??
+                if(procesoActual.getEstado() == Estado.EJECUCION){
+                   tiempoReal.remove(procesoActual);
+                   tiempoReal.addLast(procesoActual);
+                   procesoActual.setEstado(Estado.LISTO);
+                }
                 estados.append("Proceso "+procesoActual.getNombre()+" con ID "+procesoActual.getID()+" salió del CPU \n");
                 reasignarProcesos(procesoActual, tiempoReal);
                 chequearBloqueados();

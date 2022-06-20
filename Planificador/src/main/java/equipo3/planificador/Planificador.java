@@ -13,6 +13,8 @@ import javax.swing.table.DefaultTableModel;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -117,7 +119,11 @@ public class Planificador{
                 } 
             }
             
-            // actualizo tabla de bloqueados
+        }});
+        
+        //Actualización asíncrona de tabla de procesos
+        SwingUtilities.invokeLater(new Runnable(){public void run(){
+                    // actualizo tabla de bloqueados
             if(tablaBloqueados.getRowCount()>0){
                    tablaBloqueados.setRowCount(0);
                    tablaBloqueados.fireTableDataChanged();
@@ -132,7 +138,6 @@ public class Planificador{
                 tablaBloqueados.fireTableDataChanged();
             }
         }});
-        
         //progressBar
         if(totalTiempoReal != 0)
         progressTiempoReal.setValue(100 - (int)tiempoReal.size() * 100 / totalTiempoReal);
@@ -336,9 +341,13 @@ public class Planificador{
                 bloqueados.add(proc);
         } else {
             proc.setTiempoBloqueado(0.d);
+            proc.setEstado(Estado.LISTO);
+            if(bloqueados.contains(proc))
+                bloqueados.remove(proc);
             chequearBloqueados();
+            
         }
-        
+
         actualizarComponentesUI();
 
     }

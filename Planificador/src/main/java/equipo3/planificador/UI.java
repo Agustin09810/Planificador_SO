@@ -645,7 +645,7 @@ public class UI extends javax.swing.JFrame {
                   for(String es : esProceso.split(",")){
                     String key = es.split(":")[0];
                     String value = es.split(":")[1];
-                    entradaSalida.put(Integer.getInteger(key), Integer.getInteger(value));
+                    entradaSalida.put(Integer.parseInt(key), Integer.parseInt(value));
                   }
                     
                 }

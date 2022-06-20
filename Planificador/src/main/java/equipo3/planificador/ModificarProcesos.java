@@ -218,8 +218,13 @@ public class ModificarProcesos extends javax.swing.JDialog {
         // TODO add your handling code here:
         int prioridad = Integer.parseInt(procesoPrioridad.getText());
         if(tipoProceso == Tipo.TIEMPOREAL && (prioridad >20)){
-            JOptionPane.showMessageDialog(rootPane, "No se puede mover la prioridad de un proceso tiempo real a interactivo o Batch", "Editar Prioridad",JOptionPane.ERROR_MESSAGE);
-        } else {
+            JOptionPane.showMessageDialog(rootPane, "No se puede mover la prioridad de un proceso Tiempo Real a Interactivo o Batch", "Editar Prioridad",JOptionPane.ERROR_MESSAGE);
+        }else if(tipoProceso == Tipo.INTERACTIVO && prioridad <21 && prioridad >70) {
+            JOptionPane.showMessageDialog(rootPane, "No se puede mover la prioridad de un proceso Interactivo a Tiempo Real o Batch", "Editar Prioridad",JOptionPane.ERROR_MESSAGE);
+        } else if(tipoProceso == Tipo.BATCH && prioridad <71)
+            JOptionPane.showMessageDialog(rootPane, "No se puede mover la prioridad de un proceso Batch a Tiempo real o Interactivo", "Editar Prioridad",JOptionPane.ERROR_MESSAGE);
+
+        else {
             Proceso proceso = planificador.getProcesoPorId(procesoId.getText());
             if(proceso != null){
                 
@@ -233,6 +238,19 @@ public class ModificarProcesos extends javax.swing.JDialog {
                 }
                 if(procesoBloqueado.isSelected() && procesoBloqueado.getText() == "Desbloquear"){
                         planificador.bloqueoManual(proceso, false);
+                        //nuevo hilo para el planificador // caso en el que todos los procesos finalizaron y se va a procesar el bloqueado por usuario
+                        if(!planificador.getEstadoPlanificador()){
+                             new Thread(new Runnable() {
+                                 public void run() {
+                                     try {
+                                         planificador.procesarProcesos();
+                                     } catch (InterruptedException ex) {
+                                         Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                                     }
+
+                                 }
+                                 }).start();   
+                        }
                 }
                 planificador.actualizarComponentesUI();
             } else {

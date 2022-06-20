@@ -419,7 +419,7 @@ public class UI extends javax.swing.JFrame {
 
         userLabel1.setFont(new java.awt.Font("Roboto Light", 1, 14)); // NOI18N
         userLabel1.setText("Eventos");
-        bg.add(userLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 250, 90, 20));
+        bg.add(userLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 250, 80, 20));
 
         jLayeredPane1.setBorder(javax.swing.BorderFactory.createTitledBorder("Estado de colas"));
 
@@ -456,7 +456,7 @@ public class UI extends javax.swing.JFrame {
                     .addComponent(userLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ProgressTiempoReal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(userLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
         jLayeredPane1Layout.setVerticalGroup(
             jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -475,14 +475,14 @@ public class UI extends javax.swing.JFrame {
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
-        bg.add(jLayeredPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 250, 220, 170));
+        bg.add(jLayeredPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 250, 230, 170));
 
         status.setEditable(false);
         status.setColumns(20);
         status.setRows(5);
         jScrollPane2.setViewportView(status);
 
-        bg.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 270, 450, 260));
+        bg.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 270, 440, 260));
 
         estadoPlanificador.setForeground(new java.awt.Color(255, 51, 51));
         estadoPlanificador.setText("DETENIDO");
@@ -490,20 +490,20 @@ public class UI extends javax.swing.JFrame {
 
         TablaBloqueados.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "ID", "T. Restante"
+                "ID", "T. Restante", "Tipo"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Object.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                true, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -516,7 +516,7 @@ public class UI extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(TablaBloqueados);
 
-        bg.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 440, 220, 90));
+        bg.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 440, 230, 90));
 
         userLabel6.setFont(new java.awt.Font("Roboto Light", 1, 14)); // NOI18N
         userLabel6.setText("Procesos");
